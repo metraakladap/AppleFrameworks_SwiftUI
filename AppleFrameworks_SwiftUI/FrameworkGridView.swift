@@ -14,18 +14,29 @@ let colums: [GridItem] = [GridItem(.flexible()),
 ]
 
 struct FrameworkGridView: View {
+    
+    @StateObject var viewmodel = FrameworkGridViewModel()
+    
     var body: some View {
-        LazyVGrid(columns: colums) {
-            FrameWorkTitleView(name: "App Clips", imageName: "app-clip")
-            FrameWorkTitleView(name: "App Clips", imageName: "app-clip")
-            FrameWorkTitleView(name: "App Clips", imageName: "app-clip")
-            FrameWorkTitleView(name: "App Clips", imageName: "app-clip")
-            FrameWorkTitleView(name: "App Clips", imageName: "app-clip")
-            FrameWorkTitleView(name: "App Clips", imageName: "app-clip")
-            FrameWorkTitleView(name: "App Clips", imageName: "app-clip")
-            FrameWorkTitleView(name: "App Clips", imageName: "app-clip")
-
+        NavigationView{
+            ScrollView {
+                LazyVGrid(columns: colums) {
+                    ForEach(MockData.frameworks) {framework in
+                        FrameWorkTitleView(framework: framework)
+                            .onTapGesture {
+                                viewmodel.selectedFramework = framework
+                            }
+                        
+                    }
+                }
+            }
+            .navigationTitle("🍎 Framework")
+            .sheet(isPresented: $viewmodel.isShowingDetailView) {
+                FrameworkDetailView(framework: viewmodel.selectedFramework ?? MockData.sampleFramework,
+                                    isShowingDetailView: $viewmodel.isShowingDetailView)
+            }
         }
+        
     }
 }
 
@@ -34,20 +45,21 @@ struct FrameworkGridView: View {
 }
 
 struct FrameWorkTitleView: View {
-    let name: String
-    let imageName: String
+    let framework: Framework
+    
     
     var body: some View {
         VStack {
-            Image(imageName)
+            Image(framework.imageName)
                 .resizable()
                 .frame(width: 90, height: 90)
-            Text(name)
+            Text(framework.name)
                 .font(.title2)
                 .fontWeight(.semibold)
                 .scaledToFit()
                 .minimumScaleFactor(0.6)
         }
+        .padding()
     }
     
     

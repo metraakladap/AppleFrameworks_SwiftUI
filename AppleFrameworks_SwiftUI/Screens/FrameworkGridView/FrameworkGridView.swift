@@ -25,7 +25,7 @@ struct FrameworkGridView: View {
                             }
                 }
             }
-            
+            .listStyle(.inset)
             .navigationTitle("🍎 Framework")
            
         }
